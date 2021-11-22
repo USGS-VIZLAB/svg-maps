@@ -18,7 +18,8 @@ p2_targets <- list(
     p2_conus_states_coords,
     p1_conus_states_sf %>% 
       filter(ID %in% p2_conus_states_names) %>% 
-      sf_to_coords(svg_width),
+      sf_to_coords(svg_width, 
+                   view_bbox = st_bbox(p1_conus_states_sf)),
     pattern = map(p2_conus_states_names)
   ),
   
