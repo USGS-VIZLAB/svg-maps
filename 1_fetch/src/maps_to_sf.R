@@ -33,6 +33,7 @@ generate_conus_states_sf <- function(proj_str) {
   # polygon and gets dropped somewhere along the way.
   co_sf <- maps::map("state", "colorado", fill = TRUE, plot=FALSE) %>%
     st_as_sf() %>%
+    # st_buffer(0) %>% # Hmm thought it would fix the weird line but doesn't 
     st_transform(proj_str)
   
   maps::map("state", fill = TRUE, plot=FALSE) %>%

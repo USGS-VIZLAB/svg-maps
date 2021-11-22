@@ -2,6 +2,7 @@ library(targets)
 
 tar_option_set(packages = c(
   "maps",
+  "nhdplusTools",
   "rmapshaper",
   "sf",
   "tidyverse",

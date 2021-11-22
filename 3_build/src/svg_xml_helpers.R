@@ -25,12 +25,12 @@ add_grp <- function(out_svg, in_svg, grp_nm, trans_x, trans_y) {
   return(out_svg)
 }
 
-add_child_paths <- function(out_svg, in_svg, paths) {
+add_child_paths <- function(out_svg, in_svg, paths, path_nms) {
   svg_state <- read_xml(in_svg)
-  for(path_i in paths) {
-    xml_add_child(svg_state, 'path', d = path_i, 
-                  class='conus-state', 
-                  style="stroke:#9fabb7;stroke-width:0.5;fill:green")
+  for(i in 1:length(paths)) {
+    xml_add_child(svg_state, 'path', d = paths[i], 
+                  class = path_nms[i], 
+                  style = "stroke:#9fabb7;stroke-width:0.5;fill:none")
   }
   write_xml(svg_state, out_svg)
   return(out_svg)
