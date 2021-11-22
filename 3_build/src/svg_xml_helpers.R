@@ -4,20 +4,24 @@
 
 init_svg <- function(out_svg, viewbox_dims) {
   # Create the main "parent" svg node. This is the top-level part of the svg
-  xml_new_root('svg', 
+  svg_root <- xml_new_root('svg', 
                viewBox = paste(viewbox_dims, collapse=" "), 
-               preserveAspectRatio="xMidYMid meet", 
-               version="1.1") %>% 
-    write_xml(out_svg)
+               preserveAspectRatio="xMidYMid meet",
+               xmlns="http://www.w3.org/2000/svg", 
+               `xmlns:xlink`="http://www.w3.org/1999/xlink") 
+  write_xml(svg_root, out_svg)
   return(out_svg)
 }
 
 add_grp <- function(out_svg, in_svg, grp_nm, trans_x, trans_y) {
   
-  read_xml(in_svg) %>% 
+  current_svg <- read_xml(in_svg)
+  
+  current_svg %>% 
     xml_add_child('g', id = grp_nm, 
-                  transform = sprintf("translate(%s %s) scale(0.35, 0.35)", trans_x, trans_y)) %>% 
-    write_xml(out_svg)
+                  transform = sprintf("translate(%s %s) scale(0.35, 0.35)", trans_x, trans_y))
+  
+  write_xml(current_svg, out_svg)
   
   return(out_svg)
 }
@@ -27,7 +31,7 @@ add_child_paths <- function(out_svg, in_svg, paths) {
   for(path_i in paths) {
     xml_add_child(svg_state, 'path', d = path_i, 
                   class='conus-state', 
-                  style="stroke:#9fabb7;stroke-width:0.5;fill:none")
+                  style="stroke:#9fabb7;stroke-width:0.5;fill:green")
   }
   write_xml(svg_state, out_svg)
   return(out_svg)
