@@ -1,6 +1,7 @@
 # Get spatial data into sf objects
 
 source("1_fetch/src/maps_to_sf.R")
+source("1_fetch/src/nhd_to_sf.R")
 
 p1_targets <- list(
   
@@ -15,17 +16,16 @@ p1_targets <- list(
   ),
   
   # Get basins
-  # TODO: add more than the one IWS basin and propogate these
-  # labels through to the SVG additions.
-  tar_target(
-    p1_huc8s, c("07120001", "07120002", "07120003")
-  ),
   tar_target(
     p1_huc8s_sf,
-    get_huc8(id = p1_huc8s) %>% 
-      st_buffer(0) %>% 
-      st_union() %>%
-      st_make_valid() %>% 
-      st_transform(p0_proj_str)
+    # do_union = TRUE will merge them based on each list 
+    # element in `p0_huc8_list`
+    download_huc8_sf(huc8s = p0_huc8_list[[1]], 
+                     proj_str = p0_proj_str, 
+                     do_union = TRUE),
+    pattern = map(p0_huc8_list),
+    # Leave the sf objects as separate list items so that they
+    # can easily be branched over and converted to SVG.
+    iteration = "list" 
   )
 )

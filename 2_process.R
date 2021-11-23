@@ -35,12 +35,17 @@ p2_targets <- list(
   
   tar_target(
     p2_huc8s_coords,
-    p1_huc8s_sf %>% 
-      sf_to_coords(svg_width, view_bbox = p2_view_bbox)
+    sf_to_coords(p1_huc8s_sf[[1]], svg_width, view_bbox = p2_view_bbox),
+    pattern = map(p1_huc8s_sf),
+    # Keep HUCs in list format so that they can be given unique
+    # ids when they are added to the SVG
+    iteration = "list"
   ),
   
   tar_target(
+    # This will create a vector with one string per polygon
     p2_huc8s_paths,
-    coords_to_svg_path(p2_huc8s_coords, close_path = TRUE)
+    coords_to_svg_path(p2_huc8s_coords, close_path = TRUE),
+    pattern = map(p2_huc8s_coords)
   )
 )

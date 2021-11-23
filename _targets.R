@@ -19,4 +19,10 @@ source("2_process.R")
 source("3_build.R")
 source("4_disseminate.R")
 
-c(p0_targets, p1_targets, p2_targets, p3_targets, p4_targets)
+c(
+  p0_targets, 
+  p1_targets, 
+  p2_targets, 
+  p3_targets, 
+  p4_targets
+)
