@@ -37,8 +37,6 @@ p3_targets <- list(
       path_class = "huc8"),
     format = "file"
   ),
-    format = "file"
-  ),
   
   tar_target(
     map_svg,
