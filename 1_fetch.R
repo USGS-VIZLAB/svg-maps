@@ -27,5 +27,15 @@ p1_targets <- list(
     # Leave the sf objects as separate list items so that they
     # can easily be branched over and converted to SVG.
     iteration = "list" 
+  ),
+  
+  # Manual basins downloaded as gdb (ALL IN US), unzipped, 
+  # and put in the 1_fetch/in_data folder.
+  # https://nrcs.app.box.com/v/gateway/folder/39290322977
+  tar_target(
+    p1_huc4s_sf,
+    st_read("1_fetch/in_data/wbdhu4_a_us_september2021.gdb") %>% 
+      st_transform(p0_proj_str) %>% 
+      left_join(p0_huc4_mapping, by = "huc4")
   )
 )

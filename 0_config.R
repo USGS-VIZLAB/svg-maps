@@ -13,7 +13,14 @@ p0_targets <- list(
   # how they are grouped.
   tar_target(p0_huc8s_yml, "0_config/in/huc8_codes.yml", format = "file"),
   tar_target(p0_huc8_list, yaml.load_file(p0_huc8s_yml)),
-  tar_target(p0_huc8_grps, names(p0_huc8_list))
+  tar_target(p0_huc8_grps, names(p0_huc8_list)),
+  
+  ##### HUC 4 codes #####
+  # Specific to the mapping we need in the IWS basin viz
+  tar_target(p0_huc4_mapping_csv, "0_config/in/basin_mapping.csv", format = "file"),
+  tar_target(p0_huc4_mapping, read_csv(p0_huc4_mapping_csv) %>% 
+               select(iws_basin_id = basin_id,
+                      huc4 = huc04))
   
   ##### List of ON/OFF #####
   # tar_target(p0_include_states, TRUE),

@@ -31,7 +31,7 @@ p2_targets <- list(
     pattern = map(p2_conus_states_coords)
   ),
   
-  # Prepare HUCs for SVG
+  # Prepare HUC 8s for SVG
   
   tar_target(
     p2_huc8s_coords,
@@ -47,5 +47,37 @@ p2_targets <- list(
     p2_huc8s_paths,
     coords_to_svg_path(p2_huc8s_coords, close_path = TRUE),
     pattern = map(p2_huc8s_coords)
+  ),
+  
+  # Prepare HUC 4s for SVG
+  tar_target(
+    p1_huc4s_simp_sf,
+    p1_huc4s_sf %>% 
+      st_intersection(p1_conus_sf) %>% 
+      rmapshaper::ms_simplify(0.01)
+  ),
+  # If I don't do this first, I get an error about needing a vector
+  # not an sfc multipolygon. Mysterious :(
+  tar_target(
+    test_subset,
+    p1_huc4s_simp_sf %>%
+      group_by(iws_basin_id) %>% 
+      tar_group(),
+    iteration = "group"
+  ),
+  tar_target(
+    p2_huc4s_coords,
+    sf_to_coords(test_subset$shape, svg_width, view_bbox = p2_view_bbox),
+    pattern = map(test_subset),
+    # Keep HUCs in list format so that they can be given unique
+    # ids when they are added to the SVG
+    iteration = "list"
+  ),
+  
+  tar_target(
+    # This will create a vector with one string per polygon
+    p2_huc4s_paths,
+    coords_to_svg_path(p2_huc4s_coords, close_path = TRUE),
+    pattern = map(p2_huc4s_coords)
   )
 )

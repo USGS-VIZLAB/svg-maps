@@ -37,12 +37,28 @@ p3_targets <- list(
       path_class = "huc8"),
     format = "file"
   ),
+  
+  tar_target(
+    p3_huc4_classes,
+    sprintf("huc%s", 
+            if_else(p1_huc4s_simp_sf$huc4 %in% c("0204", "0712", "0713", "1401", "1402"), 
+                    " iws", ""))
+  ),
+  tar_target(
+    huc4s_paths_svg,
+    add_poly_group_to_svg(
+      out_svg = "3_build/tmp/huc4s_paths.svg",
+      in_svg = state_paths_svg,
+      grp_id = 'hucs',
+      paths = p2_huc4s_paths,
+      path_ids = p3_huc4_classes,
+      path_class = "huc"),
     format = "file"
   ),
   
   tar_target(
     map_svg,
-    build_final_svg("3_build/out/map.svg", huc8s_paths_svg),
+    build_final_svg("3_build/out/map.svg", huc4s_paths_svg),
     format = "file"
   )
   
