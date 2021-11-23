@@ -1,0 +1,42 @@
+# Each of the steps has to read and write a file or you will get an
+# error about an invalid external pointer (this is because of how xml2
+# edits the global var, see more at https://github.com/tidyverse/rvest/issues/181)
+
+init_svg <- function(out_svg, viewbox_dims) {
+  # Create the main "parent" svg node. This is the top-level part of the svg
+  svg_root <- xml_new_root('svg', 
+               viewBox = paste(viewbox_dims, collapse=" "), 
+               preserveAspectRatio="xMidYMid meet",
+               xmlns="http://www.w3.org/2000/svg", 
+               `xmlns:xlink`="http://www.w3.org/1999/xlink") 
+  write_xml(svg_root, out_svg)
+  return(out_svg)
+}
+
+add_grp <- function(out_svg, in_svg, grp_nm, trans_x, trans_y) {
+  
+  current_svg <- read_xml(in_svg)
+  
+  current_svg %>% 
+    xml_add_child('g', id = grp_nm, 
+                  transform = sprintf("translate(%s %s) scale(1, 1)", trans_x, trans_y))
+  
+  write_xml(current_svg, out_svg)
+  return(out_svg)
+}
+
+add_child_paths <- function(out_svg, in_svg, paths, path_nms) {
+  svg_state <- read_xml(in_svg)
+  for(i in 1:length(paths)) {
+    xml_add_child(svg_state, 'path', d = paths[i], 
+                  class = path_nms[i], 
+                  style = "stroke:#9fabb7;stroke-width:0.5;fill:none")
+  }
+  write_xml(svg_state, out_svg)
+  return(out_svg)
+}
+
+build_final_svg <- function(out_svg, in_svg) {
+  read_xml(in_svg) %>% write_xml(file = out_svg)
+  return(out_svg)
+}
