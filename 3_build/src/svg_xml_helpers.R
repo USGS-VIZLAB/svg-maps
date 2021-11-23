@@ -13,33 +13,34 @@ init_svg <- function(out_svg, viewbox_dims) {
   return(out_svg)
 }
 
-add_poly_group_to_svg <- function(out_svg, in_svg, grp_nm, paths, path_nms) {
+add_poly_group_to_svg <- function(out_svg, in_svg, grp_id, paths, path_ids, path_class) {
   current_svg <- read_xml(in_svg)
   
   current_svg %>% 
-    add_grp(grp_nm) %>% 
-    add_poly_paths(paths, path_nms)
+    add_grp(grp_id) %>% 
+    add_poly_paths(paths, path_ids, path_class)
   
   write_xml(current_svg, out_svg)
   return(out_svg)
 }
 
-add_grp <- function(current_svg, grp_nm, 
+add_grp <- function(current_svg, grp_id, 
                     trans_x = 0, trans_y = 0,
                     scale_x = 1, scale_y = 1) {
   current_svg %>% 
-    xml_add_child('g', id = grp_nm, 
+    xml_add_child('g', id = grp_id, 
                   transform = sprintf(
                     "translate(%s %s) scale(%s, %s)", 
                     trans_x, trans_y, scale_x, scale_y))
   return(current_svg)
 }
 
-add_poly_paths <- function(current_svg, paths, path_nms) {
+add_poly_paths <- function(current_svg, paths, path_ids, path_class) {
   for(i in 1:length(paths)) {
     xml_add_child(current_svg, 'path', 
-                  d = paths, 
-                  class = path_nms, 
+                  d = paths[i],
+                  id = path_ids[i],
+                  class = path_class[i], 
                   style = "stroke:#9fabb7;stroke-width:0.5;fill:none")
   }
   return(current_svg)
