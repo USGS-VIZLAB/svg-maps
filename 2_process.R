@@ -90,13 +90,23 @@ p2_targets <- list(
   # p2_river_coords. Input must be a vector, not a <sfc_LINESTRING> object.
   # Doing this fixes that error, which I don't really understand
   tar_target(
-    needs_a_solution,
-    bind_rows(p1_rivers_sf)
+    p1_rivers_all_unique_sf,
+    bind_rows(p1_rivers_sf) %>%
+      # There are some comids that appear multiple times
+      # because they appear in more than one basin. For
+      # these, make the id_custom column a vector and deal
+      # with the multiple values when making the class later.
+      group_by(id, comid, streamorde, lengthkm) %>% 
+      summarize(basin_class = paste(
+        sprintf(
+          "iws_basin_%s", 
+          id_custom), 
+        collapse=" "))
   ),
   tar_target(
     # Returns a list so that each river can be a separate SVG path
     p2_river_coords,
-    sf_to_coords_by_id(needs_a_solution, 
+    sf_to_coords_by_id(p1_rivers_all_unique_sf, 
                        id_col = "comid",
                        svg_width, 
                        view_bbox = p2_view_bbox),

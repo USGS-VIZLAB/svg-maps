@@ -58,10 +58,10 @@ p3_targets <- list(
   # Add in rivers
   tar_target(
     p3_river_classes,
-    sprintf("%s order_%s iws_basin_%s", 
-            rep("river", length(p2_river_paths)),
-            needs_a_solution$streamorde,
-            needs_a_solution$id_custom)
+    sprintf("%s order_%s %s", 
+            rep("river", nrow(p1_rivers_all_unique_sf)),
+            p1_rivers_all_unique_sf$streamorde,
+            p1_rivers_all_unique_sf$basin_class)
   ),
   tar_target(
     river_paths_svg,
