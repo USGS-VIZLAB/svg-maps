@@ -90,8 +90,13 @@ p2_targets <- list(
   # p2_river_coords. Input must be a vector, not a <sfc_LINESTRING> object.
   # Doing this fixes that error, which I don't really understand
   tar_target(
-    p1_rivers_all_unique_sf,
-    bind_rows(p1_rivers_sf) %>%
+    p2_rivers_all_sf,
+    bind_rows(p1_rivers_sf)
+  ),
+  tar_target(
+    p2_rivers_all_info,
+    p2_rivers_all_sf %>%
+      st_drop_geometry() %>% 
       # There are some comids that appear multiple times
       # because they appear in more than one basin. For
       # these, make the id_custom column a vector and deal
@@ -106,7 +111,7 @@ p2_targets <- list(
   tar_target(
     # Returns a list so that each river can be a separate SVG path
     p2_river_coords,
-    sf_to_coords_by_id(p1_rivers_all_unique_sf, 
+    sf_to_coords_by_id(p2_rivers_all_sf, 
                        id_col = "comid",
                        svg_width, 
                        view_bbox = p2_view_bbox),

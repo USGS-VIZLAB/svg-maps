@@ -53,7 +53,8 @@ download_rivers_sf <- function(aoi_sf, proj_str, streamorder = 3, id_col = NULL)
     if(!is.null(id_col)) {
       id_to_add <- unique(aoi_sf[[id_col]])
       rivers_out <- rivers_out %>% 
-        mutate(id_custom = id_to_add)
+        mutate(id_custom = id_to_add) %>% 
+        relocate(id_custom, .before = geometry)
     }
     
   }

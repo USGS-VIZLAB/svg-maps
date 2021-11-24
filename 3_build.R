@@ -59,18 +59,18 @@ p3_targets <- list(
   tar_target(
     p3_river_classes,
     sprintf("%s order_%s %s", 
-            rep("river", nrow(p1_rivers_all_unique_sf)),
-            p1_rivers_all_unique_sf$streamorde,
-            p1_rivers_all_unique_sf$basin_class)
+            rep("river", nrow(p2_rivers_all_info)),
+            p2_rivers_all_info$streamorde,
+            p2_rivers_all_info$basin_class)
   ),
   tar_target(
     river_paths_svg,
     add_poly_group_to_svg(
       out_svg = "3_build/tmp/river_paths.svg",
-      in_svg = huc8s_paths_svg,
+      in_svg = huc4s_paths_svg,
       grp_id = 'rivers',
       paths = p2_river_paths,
-      path_ids = sprintf("comid_%s", needs_a_solution$comid),
+      path_ids = sprintf("comid_%s", p2_rivers_all_info$comid),
       path_class = p3_river_classes),
     format = "file"
   ),
