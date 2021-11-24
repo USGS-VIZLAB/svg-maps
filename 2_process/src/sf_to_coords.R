@@ -31,3 +31,22 @@ sf_to_coords <- function(sf_obj, svg_width, view_bbox = NULL) {
     y = round(approx(y_extent_pixels, c(svg_height, 0), y_pixels)$y, 6)
   )
 }
+
+#' @title apply sf_to_coords() for each entity (or group) within an sf object
+#' @description This function is useful when applying the sf_to_coords() function 
+#' to each reach (or some other really small entity within a larger sf
+#' object). In those instances, branching is not really needed because
+#' the purrr::map() function runs really fast, but we need to treat them
+#' separately when building the SVG paths so that they are not connected.
+#' @param sf_obj sf object to extract coordinates from
+#' @param id_col column from `sf_obj` used to group the output coordinates.
+#' Values in this column will become the names of the list elements in the output.
+#' @param svg_width width of the desired SVG
+#' @param view_bbox bounding box of full view in which to convert the sf
+#' object coordinates to SVG coordinates. Will use this view_bbox coordinates
+#' as the edge of the SVG and fit the sf_obj appropriately.
+sf_to_coords_by_id <- function(sf_obj, id_col, svg_width, view_bbox = NULL) {
+  sf_obj %>% 
+    split(sf_obj[[id_col]]) %>% 
+    purrr::map(~sf_to_coords(., svg_width, view_bbox))
+}

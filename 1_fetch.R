@@ -37,5 +37,17 @@ p1_targets <- list(
     st_read("1_fetch/in_data/wbdhu4_a_us_september2021.gdb") %>% 
       st_transform(p0_proj_str) %>% 
       left_join(p0_huc4_mapping, by = "huc4")
+  ),
+  
+  # Get rivers by basin. Limit stream order
+  # to big streams only for now. 
+  tar_target(
+    p1_rivers_sf,
+    download_rivers_sf(aoi_sf = p1_huc8s_sf, 
+                       proj_str = p0_proj_str, 
+                       streamorder = 6),
+    pattern = map(p1_huc8s_sf),
+    iteration = "list"
   )
+  
 )

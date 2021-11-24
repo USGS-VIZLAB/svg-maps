@@ -18,10 +18,10 @@ p3_targets <- list(
     add_poly_group_to_svg(
       out_svg = "3_build/tmp/state_paths.svg",
       in_svg = root_svg,
-      grp_id = "conus-states",
+      grp_id = "conus_states",
       paths = p2_conus_states_paths,
       path_ids = p2_conus_states_names,
-      path_class = "state"),
+      path_class = rep("state", length(p2_conus_states_paths))),
     format = "file"
   ),
   
@@ -34,7 +34,7 @@ p3_targets <- list(
       grp_id = 'hucs',
       paths = p2_huc8s_paths,
       path_ids = p0_huc8_grps,
-      path_class = "huc8"),
+      path_class = rep("huc8", length(p2_huc8s_paths))),
     format = "file"
   ),
   
@@ -53,12 +53,26 @@ p3_targets <- list(
       paths = p2_huc4s_paths,
       path_ids = p3_huc4_classes,
       path_class = "huc"),
+  ),
+  
+  # Add in rivers
+  tar_target(
+    river_paths_svg,
+    add_poly_group_to_svg(
+      out_svg = "3_build/tmp/river_paths.svg",
+      in_svg = huc8s_paths_svg,
+      grp_id = 'rivers',
+      paths = p2_river_paths,
+      path_ids = sprintf("comid_%s", needs_a_solution$comid),
+      path_class = sprintf("%s order_%s", 
+                           rep("river", length(p2_river_paths)),
+                           needs_a_solution$streamorde)),
     format = "file"
   ),
   
   tar_target(
     map_svg,
-    build_final_svg("3_build/out/map.svg", huc4s_paths_svg),
+    build_final_svg("3_build/out/map.svg", river_paths_svg),
     format = "file"
   )
   
