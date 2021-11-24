@@ -38,9 +38,24 @@ p3_targets <- list(
     format = "file"
   ),
   
+  # Add in rivers
+  tar_target(
+    river_paths_svg,
+    add_poly_group_to_svg(
+      out_svg = "3_build/tmp/river_paths.svg",
+      in_svg = huc8s_paths_svg,
+      grp_id = 'rivers',
+      paths = p2_river_paths,
+      path_ids = needs_a_solution$comid,
+      path_class = sprintf("%s order_%s", 
+                           rep("river", length(p2_river_paths)),
+                           needs_a_solution$streamorde)),
+    format = "file"
+  ),
+  
   tar_target(
     map_svg,
-    build_final_svg("3_build/out/map.svg", huc8s_paths_svg),
+    build_final_svg("3_build/out/map.svg", river_paths_svg),
     format = "file"
   )
   

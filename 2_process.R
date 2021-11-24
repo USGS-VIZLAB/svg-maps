@@ -47,5 +47,36 @@ p2_targets <- list(
     p2_huc8s_paths,
     coords_to_svg_path(p2_huc8s_coords, close_path = TRUE),
     pattern = map(p2_huc8s_coords)
+  ),
+  
+  # Prepare rivers for SVG
+  # TODO: FIX THIS ISSUE
+  # Keep getting an error about "could not load dependencies of target
+  # p2_river_coords. Input must be a vector, not a <sfc_LINESTRING> object.
+  # Doing this fixes that error, which I don't really understand
+  tar_target(
+    needs_a_solution,
+    bind_rows(p1_rivers_sf)
+  ),
+  tar_target(
+    # Returns a list so that each river can be a separate SVG path
+    p2_river_coords,
+    sf_to_coords_by_id(needs_a_solution, 
+                       id_col = "comid",
+                       svg_width, 
+                       view_bbox = p2_view_bbox),
+  ),
+
+  tar_target(
+    # This will create a vector with one string per river/comid
+    # Using coords_to_svg_path() but with `purrr::map()` bc we 
+    # don't need to branch, just need to keep the resulting SVG 
+    # paths separate for each river reach. Really fast, so its
+    # ok if we rebuild every time new rivers are added.
+    p2_river_paths,
+    p2_river_coords %>% 
+      map(coords_to_svg_path, close_path = FALSE) %>% 
+      unlist()
   )
+  
 )
