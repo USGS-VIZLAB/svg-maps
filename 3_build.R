@@ -46,7 +46,7 @@ p3_targets <- list(
       in_svg = huc8s_paths_svg,
       grp_id = 'rivers',
       paths = p2_river_paths,
-      path_ids = needs_a_solution$comid,
+      path_ids = sprintf("comid_%s", needs_a_solution$comid),
       path_class = sprintf("%s order_%s", 
                            rep("river", length(p2_river_paths)),
                            needs_a_solution$streamorde)),
