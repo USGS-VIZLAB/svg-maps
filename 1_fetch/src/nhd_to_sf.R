@@ -36,7 +36,7 @@ download_huc8_sf <- function(huc8s = NULL, aoi_sf = NULL, proj_str, do_union = F
 #' @param streamorder numeric value indicating the size of stream to include
 #' in the query. Smaller streamorder = smaller stream in this data.
 download_rivers_sf <- function(aoi_sf, proj_str, streamorder = 3) {
-  browser()
+  
   rivers_raw <- get_nhdplus(AOI = aoi_sf, streamorder = streamorder)
   
   if(!c("sf") %in% class(rivers_raw)) {
