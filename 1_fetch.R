@@ -41,12 +41,23 @@ p1_targets <- list(
   
   # Get rivers by basin. Limit stream order
   # to big streams only for now. 
+  # Sometimes this fails about that error related to needing
+  # a vector but having an sf object passed in. I can get
+  # around that by running tar_invalidate(p2_huc4s_sf_grp) first.
   tar_target(
     p1_rivers_sf,
-    download_rivers_sf(aoi_sf = p1_huc8s_sf, 
-                       proj_str = p0_proj_str, 
-                       streamorder = 6),
-    pattern = map(p1_huc8s_sf),
+    download_rivers_sf(
+      # TODO: FIX THIS. Not ideal ... I do not like this but need to
+      # move on. It will not map over the grouped sf or just
+      # regular sf object. Keeps throwing that error about
+      # needing a vector. I don't think this solution will
+      # skip rebuilds for huc4s that haven't changed, so not
+      # a good long term solution.
+      aoi_sf = p2_huc4s_sf_grp, 
+      proj_str = p0_proj_str, 
+      streamorder = 6,
+      id_col = "iws_basin_id"),
+    pattern = map(p2_huc4s_sf_grp),
     iteration = "list"
   )
   

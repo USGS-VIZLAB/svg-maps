@@ -59,8 +59,10 @@ p2_targets <- list(
   ),
   # If I don't do this first, I get an error about needing a vector
   # not an sfc multipolygon. Mysterious :(
+  # Though, it may have something to do with slice?
+  # slice(p1_huc4s_simp_sf, 40) breaks with that error.
   tar_target(
-    test_subset,
+    p2_huc4s_sf_grp,
     p1_huc4s_simp_sf %>%
       group_by(iws_basin_id) %>% 
       tar_group(),
@@ -68,8 +70,8 @@ p2_targets <- list(
   ),
   tar_target(
     p2_huc4s_coords,
-    sf_to_coords(test_subset$shape, svg_width, view_bbox = p2_view_bbox),
-    pattern = map(test_subset),
+    sf_to_coords(p2_huc4s_sf_grp$shape, svg_width, view_bbox = p2_view_bbox),
+    pattern = map(p2_huc4s_sf_grp),
     # Keep HUCs in list format so that they can be given unique
     # ids when they are added to the SVG
     iteration = "list"

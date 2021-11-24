@@ -35,7 +35,10 @@ download_huc8_sf <- function(huc8s = NULL, aoi_sf = NULL, proj_str, do_union = F
 #' @param proj_str character string representing the projection. No default.
 #' @param streamorder numeric value indicating the size of stream to include
 #' in the query. Smaller streamorder = smaller stream in this data.
-download_rivers_sf <- function(aoi_sf, proj_str, streamorder = 3) {
+#' @param id_col column to keep from `aoi_sf` with the new rivers sf to be
+#' able to match them together later. Currently only setup to have one
+#' unique value per aoi_sf.
+download_rivers_sf <- function(aoi_sf, proj_str, streamorder = 3, id_col = NULL) {
   
   rivers_raw <- get_nhdplus(AOI = aoi_sf, streamorder = streamorder)
   
@@ -46,6 +49,13 @@ download_rivers_sf <- function(aoi_sf, proj_str, streamorder = 3) {
       select(id, comid, streamorde, lengthkm) %>% 
       st_make_valid() %>% 
       st_transform(proj_str)
+    
+    if(!is.null(id_col)) {
+      id_to_add <- unique(aoi_sf[[id_col]])
+      rivers_out <- rivers_out %>% 
+        mutate(id_custom = id_to_add)
+    }
+    
   }
   
   return(rivers_out)

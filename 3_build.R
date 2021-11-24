@@ -57,6 +57,13 @@ p3_targets <- list(
   
   # Add in rivers
   tar_target(
+    p3_river_classes,
+    sprintf("%s order_%s iws_basin_%s", 
+            rep("river", length(p2_river_paths)),
+            needs_a_solution$streamorde,
+            needs_a_solution$id_custom)
+  ),
+  tar_target(
     river_paths_svg,
     add_poly_group_to_svg(
       out_svg = "3_build/tmp/river_paths.svg",
@@ -64,9 +71,7 @@ p3_targets <- list(
       grp_id = 'rivers',
       paths = p2_river_paths,
       path_ids = sprintf("comid_%s", needs_a_solution$comid),
-      path_class = sprintf("%s order_%s", 
-                           rep("river", length(p2_river_paths)),
-                           needs_a_solution$streamorde)),
+      path_class = p3_river_classes),
     format = "file"
   ),
   
