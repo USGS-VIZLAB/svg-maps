@@ -29,3 +29,24 @@ download_huc8_sf <- function(huc8s = NULL, aoi_sf = NULL, proj_str, do_union = F
   
   return(huc8_sf)
 }
+
+#' @title Download rivers sf objects from the NHD+ using nhdplusTools
+#' @param aoi_sf sf object representing the area of interest to get rivers
+#' @param proj_str character string representing the projection. No default.
+#' @param streamorder numeric value indicating the size of stream to include
+#' in the query. Smaller streamorder = smaller stream in this data.
+download_rivers_sf <- function(aoi_sf, proj_str, streamorder = 3) {
+  
+  rivers_raw <- get_nhdplus(AOI = aoi_sf, streamorder = streamorder)
+  
+  if(!c("sf") %in% class(rivers_raw)) {
+    rivers_out <- NULL
+  } else {
+    rivers_out <- rivers_raw %>% 
+      select(id, comid, streamorde, lengthkm) %>% 
+      st_make_valid() %>% 
+      st_transform(proj_str)
+  }
+  
+  return(rivers_out)
+}

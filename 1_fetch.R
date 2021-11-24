@@ -27,5 +27,17 @@ p1_targets <- list(
     # Leave the sf objects as separate list items so that they
     # can easily be branched over and converted to SVG.
     iteration = "list" 
+  ),
+  
+  # Get rivers by basin. Limit stream order
+  # to big streams only for now. 
+  tar_target(
+    p1_rivers_sf,
+    download_rivers_sf(aoi_sf = p1_huc8s_sf, 
+                       proj_str = p0_proj_str, 
+                       streamorder = 6),
+    pattern = map(p1_huc8s_sf),
+    iteration = "list"
   )
+  
 )
