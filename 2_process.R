@@ -31,7 +31,7 @@ p2_targets <- list(
     pattern = map(p2_conus_states_coords)
   ),
   
-  # Prepare HUCs for SVG
+  # Prepare HUC 8s for SVG
   
   tar_target(
     p2_huc8s_coords,
@@ -49,19 +49,69 @@ p2_targets <- list(
     pattern = map(p2_huc8s_coords)
   ),
   
+  
+  # Prepare HUC 4s for SVG
+  tar_target(
+    p1_huc4s_simp_sf,
+    p1_huc4s_sf %>% 
+      st_intersection(p1_conus_sf) %>% 
+      rmapshaper::ms_simplify(0.01)
+  ),
+  # If I don't do this first, I get an error about needing a vector
+  # not an sfc multipolygon. Mysterious :(
+  # Though, it may have something to do with slice?
+  # slice(p1_huc4s_simp_sf, 40) breaks with that error.
+  tar_target(
+    p2_huc4s_sf_grp,
+    p1_huc4s_simp_sf %>%
+      group_by(iws_basin_id) %>% 
+      tar_group(),
+    iteration = "group"
+  ),
+  tar_target(
+    p2_huc4s_coords,
+    sf_to_coords(p2_huc4s_sf_grp$shape, svg_width, view_bbox = p2_view_bbox),
+    pattern = map(p2_huc4s_sf_grp),
+    # Keep HUCs in list format so that they can be given unique
+    # ids when they are added to the SVG
+    iteration = "list"
+  ),
+  
+  tar_target(
+    # This will create a vector with one string per polygon
+    p2_huc4s_paths,
+    coords_to_svg_path(p2_huc4s_coords, close_path = TRUE),
+    pattern = map(p2_huc4s_coords)
+  ),
+  
   # Prepare rivers for SVG
   # TODO: FIX THIS ISSUE
   # Keep getting an error about "could not load dependencies of target
   # p2_river_coords. Input must be a vector, not a <sfc_LINESTRING> object.
   # Doing this fixes that error, which I don't really understand
   tar_target(
-    needs_a_solution,
+    p2_rivers_all_sf,
     bind_rows(p1_rivers_sf)
+  ),
+  tar_target(
+    p2_rivers_all_info,
+    p2_rivers_all_sf %>%
+      st_drop_geometry() %>% 
+      # There are some comids that appear multiple times
+      # because they appear in more than one basin. For
+      # these, make the id_custom column a vector and deal
+      # with the multiple values when making the class later.
+      group_by(id, comid, streamorde, lengthkm) %>% 
+      summarize(basin_class = paste(
+        sprintf(
+          "iws_basin_%s", 
+          id_custom), 
+        collapse=" "))
   ),
   tar_target(
     # Returns a list so that each river can be a separate SVG path
     p2_river_coords,
-    sf_to_coords_by_id(needs_a_solution, 
+    sf_to_coords_by_id(p2_rivers_all_sf, 
                        id_col = "comid",
                        svg_width, 
                        view_bbox = p2_view_bbox),
