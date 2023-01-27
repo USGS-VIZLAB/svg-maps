@@ -29,6 +29,13 @@ p1_targets <- list(
     iteration = "list" 
   ),
   
+  # Save basins as sf for sharing out
+  tar_target(
+    p1_huc8s_sf_Rdata,
+    save(p1_huc8s_sf, 
+         file = "1_fetch/out/IWS_basins_sf.Rdata")
+  ),
+  
   # Get rivers by basin. Limit stream order
   # to big streams only for now. 
   tar_target(
