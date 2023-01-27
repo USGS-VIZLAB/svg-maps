@@ -3,7 +3,6 @@ library(targets)
 tar_option_set(packages = c(
   "aws.s3",
   "aws.signature",
-  "dssecrets",
   "maps",
   "nhdplusTools",
   "rmapshaper",
