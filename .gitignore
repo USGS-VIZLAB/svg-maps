@@ -46,3 +46,4 @@ _targets/*
 
 # Exclude the empty files
 !*.empty
+.Rproj.user
